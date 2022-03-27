@@ -27,7 +27,7 @@ async function install(version: string) {
 }
 
 async function verify(expected: string) {
-  const result = await getExecOutput('ghc', ["--numeric-version"], {
+  const result = await getExecOutput('ghc', ['--numeric-version'], {
     silent: true,
   });
   const actual = result.stdout.trim();
