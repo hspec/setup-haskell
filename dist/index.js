@@ -222,7 +222,7 @@ async function install(version) {
     }
 }
 async function verify(expected) {
-    const result = await (0, exec_1.getExecOutput)('ghc', ["--numeric-version"], {
+    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
         silent: true,
     });
     const actual = result.stdout.trim();
