@@ -1,0 +1,18 @@
+{
+  "name": "setup-haskell",
+  "private": true,
+  "main": "build/main.js",
+  "scripts": {
+    "build": "tsc && ncc build"
+  },
+  "dependencies": {
+    "@actions/core": "*",
+    "@actions/exec": "*"
+  },
+  "devDependencies": {
+    "@tsconfig/node16-strictest": "*",
+    "@types/node": "16.*",
+    "@vercel/ncc": "*",
+    "typescript": "*"
+  }
+}
