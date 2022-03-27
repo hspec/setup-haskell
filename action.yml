@@ -1,0 +1,8 @@
+name: Setup Haskell
+author: Simon Hengel
+inputs:
+  ghc-version:
+    required: true
+runs:
+  using: node16
+  main: dist/index.js
