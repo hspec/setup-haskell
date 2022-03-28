@@ -1,3 +1,4 @@
+name: selftest windows-2022
 on:
   push:
     branches:

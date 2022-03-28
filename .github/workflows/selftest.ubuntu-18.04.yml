@@ -1,3 +1,4 @@
+name: selftest ubuntu-18.04
 on:
   push:
     branches:
