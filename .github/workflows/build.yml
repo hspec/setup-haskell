@@ -1,4 +1,4 @@
-name: check-dist
+name: build
 
 on:
   pull_request:
@@ -17,6 +17,8 @@ jobs:
           node-version: 16
 
       - run: npm ci
+      - run: npm test
+
       - run: npm run build
       - name: Check for uncommitted changes
         run: git diff --quiet || (git diff && false)
