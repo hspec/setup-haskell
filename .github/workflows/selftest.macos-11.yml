@@ -1,3 +1,4 @@
+name: selftest macos-11
 on:
   push:
     branches:

@@ -1,3 +1,4 @@
+name: selftest windows-2019
 on:
   push:
     branches:

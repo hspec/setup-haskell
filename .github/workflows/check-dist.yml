@@ -1,3 +1,5 @@
+name: check-dist
+
 on:
   pull_request:
     branches:
