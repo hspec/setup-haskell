@@ -30,7 +30,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ppa = exports.has = exports.install = void 0;
+exports.ppa = exports.versions = exports.install = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
 async function install(version) {
@@ -41,16 +41,16 @@ async function install(version) {
     });
 }
 exports.install = install;
-function has(version) {
+function versions() {
     const environment = process.env['ImageOS'];
     if (environment == 'ubuntu20' || environment == 'ubuntu18') {
-        return exports.ppa[environment].has(version);
+        return exports.ppa[environment];
     }
     else {
-        return false;
+        return new Set();
     }
 }
-exports.has = has;
+exports.versions = versions;
 exports.ppa = {
     ubuntu18: new Set([
         // https://launchpad.net/~hvr/+archive/ubuntu/ghc?field.series_filter=bionic
@@ -136,31 +136,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.install = void 0;
+exports.list = exports.install = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
 async function install(version) {
-    const versions = await list();
-    if (versions.has(version)) {
-        await core.group('ghcup install', async () => {
-            await (0, exec_1.exec)(`ghcup install ghc ${version} --set`);
-            core.addPath('$HOME/.ghcup/bin');
-        });
-    }
-    else {
-        throw new Error(`GHC version ${version} is not available.`);
-    }
+    await core.group('ghcup install', async () => {
+        await (0, exec_1.exec)(`ghcup install ghc ${version} --set`);
+        core.addPath('$HOME/.ghcup/bin');
+    });
 }
 exports.install = install;
 async function list() {
-    const result = await core.group('ghcup list', async () => {
-        return await (0, exec_1.getExecOutput)('ghcup list --raw-format --tool ghc');
+    const result = await (0, exec_1.getExecOutput)('ghcup', ['list', '--raw-format', '--tool', 'ghc'], {
+        silent: true,
     });
     return new Set(result.stdout.split('\n').flatMap(line => {
         let version = line.match(/^ghc\s+(\d+.\d+.\d+)\s+/)?.at(1);
         return version ? [version] : [];
     }));
 }
+exports.list = list;
 
 
 /***/ }),
@@ -198,10 +193,11 @@ const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
+const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
-        const version = core.getInput('ghc-version');
-        await install(version);
+        const requested = core.getInput('ghc-version');
+        const version = await install(requested);
         await verify(version);
     }
     catch (error) {
@@ -213,13 +209,17 @@ async function main() {
         }
     }
 }
-async function install(version) {
-    if (apt.has(version)) {
-        await apt.install(version);
+async function install(requested) {
+    const resolved = await (0, resolve_1.resolve)(requested);
+    switch (resolved.source) {
+        case 'apt':
+            await apt.install(resolved.version);
+            break;
+        case 'ghcup':
+            await ghcup.install(resolved.version);
+            break;
     }
-    else {
-        await ghcup.install(version);
-    }
+    return resolved.version;
 }
 async function verify(expected) {
     const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
@@ -231,7 +231,95 @@ async function verify(expected) {
     }
     core.info(`Installed GHC version ${expected}.`);
 }
-main();
+if (require.main === require.cache[eval('__filename')]) {
+    main();
+}
+
+
+/***/ }),
+
+/***/ 778:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolve = exports.resolveVersion = exports.compare = void 0;
+const apt = __importStar(__nccwpck_require__(911));
+const ghcup = __importStar(__nccwpck_require__(474));
+function compare(a, b) {
+    const xs = a.split('.');
+    const ys = b.split('.');
+    const range = xs.length < ys.length ? ys : xs;
+    for (const i in range) {
+        const x = Number(xs[i] || 0);
+        const y = Number(ys[i] || 0);
+        if (x < y) {
+            return -1;
+        }
+        if (x > y) {
+            return 1;
+        }
+    }
+    return 0;
+}
+exports.compare = compare;
+function resolveVersion(requested, versions) {
+    if (versions.has(requested)) {
+        return requested;
+    }
+    else {
+        return [...versions]
+            .filter(x => x.startsWith(requested + '.'))
+            .sort(compare)
+            .reverse()[0];
+    }
+}
+exports.resolveVersion = resolveVersion;
+async function resolve(requested) {
+    const aptVersions = apt.versions();
+    if (aptVersions.has(requested)) {
+        return {
+            version: requested,
+            source: 'apt',
+        };
+    }
+    const versions = new Set([...aptVersions, ...await ghcup.list()]);
+    const version = resolveVersion(requested, versions);
+    if (version) {
+        return {
+            version,
+            source: aptVersions.has(version) ? 'apt' : 'ghcup',
+        };
+    }
+    else {
+        throw new Error(`GHC version ${requested} is not available.`);
+    }
+}
+exports.resolve = resolve;
 
 
 /***/ }),

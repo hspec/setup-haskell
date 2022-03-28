@@ -3,11 +3,12 @@ import { getExecOutput } from '@actions/exec';
 
 import * as apt from './apt';
 import * as ghcup from './ghcup';
+import { resolve } from './resolve';
 
 async function main() {
   try {
-    const version = core.getInput('ghc-version');
-    await install(version);
+    const requested = core.getInput('ghc-version');
+    const version = await install(requested);
     await verify(version);
   } catch (error) {
     if (error instanceof Error) {
@@ -18,12 +19,17 @@ async function main() {
   }
 }
 
-async function install(version: string) {
-  if (apt.has(version)) {
-    await apt.install(version);
-  } else {
-    await ghcup.install(version);
+async function install(requested: string): Promise<string> {
+  const resolved = await resolve(requested);
+  switch (resolved.source) {
+    case 'apt':
+      await apt.install(resolved.version);
+      break;
+    case 'ghcup':
+      await ghcup.install(resolved.version);
+      break;
   }
+  return resolved.version;
 }
 
 async function verify(expected: string) {
@@ -37,4 +43,6 @@ async function verify(expected: string) {
   core.info(`Installed GHC version ${expected}.`);
 }
 
-main();
+if (require.main === module) {
+  main();
+}

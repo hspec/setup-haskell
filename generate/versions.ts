@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { ppa } from '../src/apt';
 
 export const all: string[] = JSON.parse(fs.readFileSync('generate/versions/all.json', 'utf8'));
+export const allSet = new Set(all);
 
 const ghcup: string[] = JSON.parse(fs.readFileSync('generate/versions/ghcup.json', 'utf8'));
 const ghcupSet: Set<string> = new Set(ghcup);

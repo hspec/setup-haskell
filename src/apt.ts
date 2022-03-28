@@ -9,12 +9,12 @@ export async function install(version: string) {
   });
 }
 
-export function has(version: string) {
+export function versions(): Set<string> {
   const environment = process.env['ImageOS'];
   if (environment == 'ubuntu20' || environment == 'ubuntu18') {
-    return ppa[environment].has(version);
+    return ppa[environment];
   } else {
-    return false;
+    return new Set();
   }
 }
 

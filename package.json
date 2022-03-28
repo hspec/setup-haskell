@@ -3,18 +3,23 @@
   "private": true,
   "main": "build/main.js",
   "scripts": {
-    "build": "tsc && ncc build"
+    "build": "tsc && ncc build",
+    "test": "jest",
+    "watch": "jest --config jest.config.fast.ts --watch"
   },
   "dependencies": {
     "@actions/core": "*",
-    "@actions/exec": "*",
-    "yaml": "^1.10.2"
+    "@actions/exec": "*"
   },
   "devDependencies": {
     "@tsconfig/node16-strictest": "*",
     "@types/node": "16.*",
     "@vercel/ncc": "*",
     "markdown-table": "*",
+    "ts-jest": "^27.1.4",
+    "jest": "^27.5.1",
+    "yaml": "^1.10.2",
+    "ts-node": "^10.7.0",
     "typescript": "^4.7.0-dev.20220327"
   }
 }

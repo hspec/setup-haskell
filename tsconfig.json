@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node16-strictest/tsconfig.json",
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
   "compilerOptions": {
     "moduleResolution": "nodenext",
     "outDir": "build"
