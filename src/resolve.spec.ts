@@ -23,6 +23,10 @@ describe('resolveVersion', () => {
     expect(resolveVersion('8.4', allSet)).toBe('8.4.4');
   });
 
+  it('resolves "latest"', () => {
+    expect(resolveVersion('latest', new Set(["8.6.4", "8.8.3", "8.10.4"]))).toBe('8.10.4');
+  });
+
   context('with a fully qualified version', () => {
     it('returns that version verbatim', () => {
       expect(resolveVersion('7.6.2', allSet)).toBe('7.6.2');
@@ -70,7 +74,7 @@ describe('resolve', () => {
 
   context('with an unknown version', () => {
     it('throws an exception', async () => {
-      await expect(resolve('7.0.5')).rejects.toThrow(new Error('GHC version 7.0.5 is not available.'));
+      await expect(resolve('7.0.5')).rejects.toThrow(new Error('GHC version "7.0.5" is not available.'));
     });
   });
 });

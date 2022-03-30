@@ -292,8 +292,9 @@ function resolveVersion(requested, versions) {
         return requested;
     }
     else {
+        const prefix = requested == 'latest' ? '' : requested + '.';
         return [...versions]
-            .filter(x => x.startsWith(requested + '.'))
+            .filter(x => x.startsWith(prefix))
             .sort(compare)
             .reverse()[0];
     }
@@ -316,7 +317,7 @@ async function resolve(requested) {
         };
     }
     else {
-        throw new Error(`GHC version ${requested} is not available.`);
+        throw new Error(`GHC version ${JSON.stringify(requested)} is not available.`);
     }
 }
 exports.resolve = resolve;
