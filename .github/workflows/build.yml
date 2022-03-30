@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  check-dist:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,5 +23,6 @@ jobs:
       - run: npm test
 
       - run: npm run build
+      - run: npx ts-node generate/readme.ts > README.md
       - name: Check for uncommitted changes
         run: git diff --quiet || (git diff && false)

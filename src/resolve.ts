@@ -22,8 +22,9 @@ export function resolveVersion(requested: string, versions: Set<string>): string
   if (versions.has(requested)) {
     return requested;
   } else {
+    const prefix = requested == 'latest' ? '' : requested + '.';
     return [...versions]
-      .filter(x => x.startsWith(requested + '.'))
+      .filter(x => x.startsWith(prefix))
       .sort(compare)
       .reverse()[0];
   }
@@ -53,6 +54,6 @@ export async function resolve(requested: string): Promise<ResolvedVersion> {
       source: aptVersions.has(version) ? 'apt' : 'ghcup',
     };
   } else {
-    throw new Error(`GHC version ${requested} is not available.`);
+    throw new Error(`GHC version ${JSON.stringify(requested)} is not available.`);
   }
 }
