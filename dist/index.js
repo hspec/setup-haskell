@@ -197,8 +197,10 @@ const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
         const requested = core.getInput('ghc-version');
-        const version = await install(requested);
-        await verify(version);
+        if (requested != 'system') {
+            const version = await install(requested);
+            await verify(version);
+        }
     }
     catch (error) {
         if (error instanceof Error) {
