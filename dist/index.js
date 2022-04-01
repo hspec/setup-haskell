@@ -197,7 +197,7 @@ const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
         const requested = core.getInput('ghc-version');
-        if (requested != 'system') {
+        if (requested === 'system') {
             report();
         }
         else {
