@@ -198,6 +198,9 @@ async function main() {
     try {
         const requested = core.getInput('ghc-version');
         if (requested != 'system') {
+            report();
+        }
+        else {
             const version = await install(requested);
             await verify(version);
         }
@@ -224,14 +227,20 @@ async function install(requested) {
     return resolved.version;
 }
 async function verify(expected) {
-    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
-        silent: true,
-    });
-    const actual = result.stdout.trim();
+    const actual = await installed();
     if (actual != expected) {
         throw new Error(`Expected GHC version to be ${expected} but got ${actual}.`);
     }
     core.info(`Installed GHC version ${expected}.`);
+}
+async function report() {
+    core.info(`Using GHC version ${await installed()}.`);
+}
+async function installed() {
+    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
+        silent: true,
+    });
+    return result.stdout.trim();
 }
 if (require.main === require.cache[eval('__filename')]) {
     main();
