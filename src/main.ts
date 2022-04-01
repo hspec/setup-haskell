@@ -8,7 +8,7 @@ import { resolve } from './resolve';
 async function main() {
   try {
     const requested = core.getInput('ghc-version');
-    if (requested != 'system') {
+    if (requested === 'system') {
       report();
     } else {
       const version = await install(requested);
