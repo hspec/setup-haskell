@@ -8,8 +8,10 @@ import { resolve } from './resolve';
 async function main() {
   try {
     const requested = core.getInput('ghc-version');
-    const version = await install(requested);
-    await verify(version);
+    if (requested != 'system') {
+      const version = await install(requested);
+      await verify(version);
+    }
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);
