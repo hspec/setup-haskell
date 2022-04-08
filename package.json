@@ -3,7 +3,7 @@
   "private": true,
   "main": "build/main.js",
   "scripts": {
-    "build": "tsc && ncc build",
+    "build": "tsc && ncc build && ts-node generate/readme.ts && ts-node generate/selftest.ts",
     "test": "jest",
     "watch": "jest --config jest.config.fast.ts --watch"
   },
