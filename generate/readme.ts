@@ -24,9 +24,12 @@ async function main() {
     unique(all.map(majorVersion)).map(major => [resolveVersion(major, allSet), major])
   );
 
+  const latest = resolveVersion('latest', allSet);
+
   function codeVersion(version: string): string {
     const major = latestMajorVersions[version];
-    return major ? `${code(version)} ${code(major)}` : code(version);
+    const formatted = major ? `${code(major)} ${code(version)}` : code(version);
+    return version == latest ? `${code('latest')} ${formatted}` : formatted;
   }
 
   const { markdownTable } = await import('markdown-table');
