@@ -203,6 +203,10 @@ async function main() {
         else {
             const version = await install(requested);
             await verify(version);
+            const home = process.env['HOME'];
+            if (home) {
+                core.addPath(home + '/.cabal/bin/');
+            }
         }
     }
     catch (error) {

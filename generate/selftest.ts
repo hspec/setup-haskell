@@ -5,15 +5,27 @@ import * as resolve from '../src/resolve';
 import { ppa } from '../src/apt';
 import { list } from '../src/ghcup';
 
+const not_working_on_ubuntu_22_04 = new Set([
+  '7.10.3',     // Segmentation fault
+  '8.0.2',      // missing libtinfo.so.5
+  '8.2.2',      // missing libtinfo.so.5
+]);
+
+const not_working_on_windows_2022 = new Set([
+  '8.8.3',      // installed not able to compile executables
+]);
+
 export async function versionMap() {
   const ghcup = await list();
   return {
     'ubuntu-18.04': new Set([...ppa.ubuntu18, ...ghcup]),
     'ubuntu-20.04': new Set([...ppa.ubuntu20, ...ghcup]),
+    'ubuntu-22.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_22_04.has(v))),
     'macos-10.15': ghcup,
     'macos-11': ghcup,
+    'macos-12': ghcup,
     'windows-2019': ghcup,
-    'windows-2022': ghcup,
+    'windows-2022': new Set([...ghcup].filter(v => !not_working_on_windows_2022.has(v))),
   };
 }
 
