@@ -14,6 +14,9 @@ jobs:
         with:
           ghc-version: ${{ matrix.ghc }}
       - run: ghc --version
+      - run: cabal update
+      - run: cabal install alex
+      - run: alex --version
     strategy:
       matrix:
         os:
@@ -33,7 +36,6 @@ jobs:
           - 8.6.5
           - 8.8.1
           - 8.8.2
-          - 8.8.3
           - 8.8.4
           - 8.10.1
           - 8.10.2

@@ -1,4 +1,4 @@
-name: selftest ubuntu-20.04
+name: selftest ubuntu-22.04
 on:
   push:
     branches:
@@ -20,15 +20,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-22.04
         ghc:
-          - 7.0.1
-          - 7.0.4
-          - 7.2.2
-          - 7.4.2
-          - 7.10.3
-          - 8.0.2
-          - 8.2.2
           - 8.4.1
           - 8.4.2
           - 8.4.3
