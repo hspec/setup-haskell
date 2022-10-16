@@ -196,6 +196,10 @@ const ghcup = __importStar(__nccwpck_require__(474));
 const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
+        const home = process.env['HOME'];
+        if (home) {
+            core.addPath(home + '/.cabal/bin/');
+        }
         const requested = core.getInput('ghc-version');
         if (requested === 'system') {
             report();
@@ -203,10 +207,6 @@ async function main() {
         else {
             const version = await install(requested);
             await verify(version);
-            const home = process.env['HOME'];
-            if (home) {
-                core.addPath(home + '/.cabal/bin/');
-            }
         }
     }
     catch (error) {

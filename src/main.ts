@@ -7,16 +7,16 @@ import { resolve } from './resolve';
 
 async function main() {
   try {
+    const home = process.env['HOME'];
+    if (home) {
+      core.addPath(home + '/.cabal/bin/');
+    }
     const requested = core.getInput('ghc-version');
     if (requested === 'system') {
       report();
     } else {
       const version = await install(requested);
       await verify(version);
-      const home = process.env['HOME'];
-      if (home) {
-        core.addPath(home + '/.cabal/bin/');
-      }
     }
   } catch (error) {
     if (error instanceof Error) {
