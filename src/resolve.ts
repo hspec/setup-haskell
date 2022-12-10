@@ -1,7 +1,9 @@
 import * as apt from './apt';
 import * as ghcup from './ghcup';
 
-export function compare(a: string, b: string): number {
+export type Ordering = -1 | 0 | 1
+
+export function compareVersions(a: string, b: string): Ordering {
   const xs = a.split('.');
   const ys = b.split('.');
   const range = xs.length < ys.length ? ys : xs;
@@ -25,7 +27,7 @@ export function resolveVersion(requested: string, versions: Set<string>): string
     const prefix = requested == 'latest' ? '' : requested + '.';
     return [...versions]
       .filter(x => x.startsWith(prefix))
-      .sort(compare)
+      .sort(compareVersions)
       .reverse()[0];
   }
 }

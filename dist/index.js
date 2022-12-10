@@ -42,9 +42,9 @@ async function install(version) {
 }
 exports.install = install;
 function versions() {
-    const environment = process.env['ImageOS'];
-    if (environment == 'ubuntu20' || environment == 'ubuntu18') {
-        return exports.ppa[environment];
+    const image = process.env['ImageOS'];
+    if (image == 'ubuntu20' || image == 'ubuntu18') {
+        return exports.ppa[image];
     }
     else {
         return new Set();
@@ -139,7 +139,15 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.list = exports.install = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
+const resolve_1 = __nccwpck_require__(778);
 async function install(version) {
+    const older804 = (0, resolve_1.compareVersions)(version, '8.4') == -1;
+    const ncursesRequired = older804 && process.env['ImageOS'] == 'ubuntu22';
+    if (ncursesRequired) {
+        await core.group('sudo apt-get install libncurses5', async () => {
+            await (0, exec_1.exec)('sudo apt-get install libncurses5');
+        });
+    }
     await core.group('ghcup install', async () => {
         await (0, exec_1.exec)(`ghcup install ghc ${version} --set`);
         core.addPath('$HOME/.ghcup/bin');
@@ -282,10 +290,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolve = exports.resolveVersion = exports.compare = void 0;
+exports.resolve = exports.resolveVersion = exports.compareVersions = void 0;
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
-function compare(a, b) {
+function compareVersions(a, b) {
     const xs = a.split('.');
     const ys = b.split('.');
     const range = xs.length < ys.length ? ys : xs;
@@ -301,7 +309,7 @@ function compare(a, b) {
     }
     return 0;
 }
-exports.compare = compare;
+exports.compareVersions = compareVersions;
 function resolveVersion(requested, versions) {
     if (versions.has(requested)) {
         return requested;
@@ -310,7 +318,7 @@ function resolveVersion(requested, versions) {
         const prefix = requested == 'latest' ? '' : requested + '.';
         return [...versions]
             .filter(x => x.startsWith(prefix))
-            .sort(compare)
+            .sort(compareVersions)
             .reverse()[0];
     }
 }
