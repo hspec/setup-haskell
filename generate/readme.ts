@@ -18,7 +18,7 @@ async function main() {
   };
 
   const allSet = new Set(Object.values(versions).map(x => Array.from(x)).flat());
-  const all = [...allSet].sort(resolve.compare);
+  const all = [...allSet].sort(resolve.compareVersions);
 
   const latestMajorVersions = Object.fromEntries(
     unique(all.map(majorVersion)).map(major => [resolveVersion(major, allSet), major])

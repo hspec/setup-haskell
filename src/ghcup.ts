@@ -1,7 +1,15 @@
 import * as core from '@actions/core';
 import { exec, getExecOutput } from '@actions/exec';
+import { compareVersions } from './resolve';
 
 export async function install(version: string) {
+  const older804 = compareVersions(version, '8.4') == -1;
+  const ncursesRequired = older804 && process.env['ImageOS'] == 'ubuntu22';
+  if (ncursesRequired) {
+    await core.group('sudo apt-get install libncurses5', async () => {
+      await exec('sudo apt-get install libncurses5');
+    });
+  }
   await core.group('ghcup install', async () => {
     await exec(`ghcup install ghc ${version} --set`);
     core.addPath('$HOME/.ghcup/bin');

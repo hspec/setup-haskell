@@ -10,9 +10,9 @@ export async function install(version: string) {
 }
 
 export function versions(): Set<string> {
-  const environment = process.env['ImageOS'];
-  if (environment == 'ubuntu20' || environment == 'ubuntu18') {
-    return ppa[environment];
+  const image = process.env['ImageOS'];
+  if (image == 'ubuntu20' || image == 'ubuntu18') {
+    return ppa[image];
   } else {
     return new Set();
   }

@@ -7,8 +7,6 @@ import { list } from '../src/ghcup';
 
 const not_working_on_ubuntu_22_04 = new Set([
   '7.10.3',     // Segmentation fault
-  '8.0.2',      // missing libtinfo.so.5
-  '8.2.2',      // missing libtinfo.so.5
 ]);
 
 const not_working_on_windows_2022 = new Set([
@@ -34,7 +32,7 @@ async function main() {
   for (const [name, supported] of Object.entries(versions)) {
     const file = `.github/workflows/selftest.${name}.yml`;
     const yaml = YAML.parse(fs.readFileSync(file, 'utf8'));
-    yaml.jobs.build.strategy.matrix.ghc = [...supported].sort(resolve.compare);
+    yaml.jobs.build.strategy.matrix.ghc = [...supported].sort(resolve.compareVersions);
     fs.writeFileSync(file, YAML.stringify(yaml));
   }
 }

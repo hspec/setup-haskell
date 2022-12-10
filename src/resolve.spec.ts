@@ -1,4 +1,4 @@
-import { compare, resolveVersion, resolve } from '../src/resolve';
+import { compareVersions, resolveVersion, resolve } from '../src/resolve';
 
 const context = describe;
 
@@ -23,17 +23,17 @@ const allSet = new Set([
   '8.4.4',
 ]);
 
-describe('compare', () => {
+describe('compareVersions', () => {
   it('compares versions', () => {
-    expect(compare('1.0', '1.2')).toBe(-1);
+    expect(compareVersions('1.0', '1.2')).toBe(-1);
   });
 
   it('handles multi-digit version components', () => {
-    expect(compare('1.2', '1.10')).toBe(-1);
+    expect(compareVersions('1.2', '1.10')).toBe(-1);
   });
 
   it('handles versions with a different number of components', () => {
-    expect(compare('1.2', '1.2.3')).toBe(-1);
+    expect(compareVersions('1.2', '1.2.3')).toBe(-1);
   });
 });
 
