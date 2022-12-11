@@ -3,6 +3,11 @@ author: Simon Hengel
 inputs:
   ghc-version:
     required: true
+
+outputs:
+  ghc-version:
+    description: 'The installed GHC version.'
+
 runs:
   using: node16
   main: dist/index.js

@@ -209,13 +209,8 @@ async function main() {
             core.addPath(home + '/.cabal/bin/');
         }
         const requested = core.getInput('ghc-version');
-        if (requested === 'system') {
-            report();
-        }
-        else {
-            const version = await install(requested);
-            await verify(version);
-        }
+        const version = await ensure(requested);
+        core.setOutput('ghc-version', version);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -224,6 +219,18 @@ async function main() {
         else {
             core.setFailed(String(error));
         }
+    }
+}
+async function ensure(requested) {
+    if (requested === 'system') {
+        const version = installed();
+        core.info(`Using GHC version ${version}.`);
+        return version;
+    }
+    else {
+        const version = await install(requested);
+        await verify(version);
+        return version;
     }
 }
 async function install(requested) {
@@ -244,9 +251,6 @@ async function verify(expected) {
         throw new Error(`Expected GHC version to be ${expected} but got ${actual}.`);
     }
     core.info(`Installed GHC version ${expected}.`);
-}
-async function report() {
-    core.info(`Using GHC version ${await installed()}.`);
 }
 async function installed() {
     const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
