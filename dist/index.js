@@ -198,16 +198,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const exec_1 = __nccwpck_require__(514);
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
-        const home = process.env['HOME'];
-        if (home) {
-            core.addPath(home + '/.cabal/bin/');
-        }
+        await addCabalBinToPath();
         const requested = core.getInput('ghc-version');
         const version = await ensure(requested);
         core.setOutput('ghc-version', version);
@@ -221,42 +217,44 @@ async function main() {
         }
     }
 }
-async function ensure(requested) {
-    if (requested === 'system') {
-        const version = installed();
-        core.info(`Using GHC version ${version}.`);
-        return version;
-    }
-    else {
-        const version = await install(requested);
-        await verify(version);
-        return version;
+async function addCabalBinToPath() {
+    const home = process.env['HOME'];
+    if (home) {
+        core.addPath(home + '/.cabal/bin/');
     }
 }
-async function install(requested) {
+async function ensure(requested) {
     const resolved = await (0, resolve_1.resolve)(requested);
+    await install(resolved);
+    await verify(resolved);
+    return resolved.version;
+}
+async function install(resolved) {
+    // IMPORTANT: Using `undefined` instead of `void` as the return type ensures
+    // that the pattern match is exhaustive.
     switch (resolved.source) {
         case 'apt':
             await apt.install(resolved.version);
-            break;
+            return;
         case 'ghcup':
             await ghcup.install(resolved.version);
-            break;
+            return;
+        case 'system':
+            return;
     }
-    return resolved.version;
 }
-async function verify(expected) {
-    const actual = await installed();
+async function verify(resolved) {
+    const expected = resolved.version;
+    const actual = await (0, resolve_1.installed)();
     if (actual != expected) {
         throw new Error(`Expected GHC version to be ${expected} but got ${actual}.`);
     }
-    core.info(`Installed GHC version ${expected}.`);
-}
-async function installed() {
-    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
-        silent: true,
-    });
-    return result.stdout.trim();
+    if (resolved.source === 'system') {
+        core.info(`Using GHC version ${expected}.`);
+    }
+    else {
+        core.info(`Installed GHC version ${expected}.`);
+    }
 }
 if (require.main === require.cache[eval('__filename')]) {
     main();
@@ -294,7 +292,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.resolve = exports.resolveVersion = exports.compareVersions = void 0;
+exports.installed = exports.resolve = exports.resolveVersion = exports.compareVersions = void 0;
+const exec_1 = __nccwpck_require__(514);
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 function compareVersions(a, b) {
@@ -328,19 +327,25 @@ function resolveVersion(requested, versions) {
 }
 exports.resolveVersion = resolveVersion;
 async function resolve(requested) {
+    const systemVersion = await installed();
     const aptVersions = apt.versions();
-    if (aptVersions.has(requested)) {
-        return {
-            version: requested,
-            source: 'apt',
-        };
+    let version;
+    if (requested === 'system') {
+        version = systemVersion;
     }
-    const versions = new Set([...aptVersions, ...await ghcup.list()]);
-    const version = resolveVersion(requested, versions);
+    else if (apt.versions().has(requested)) {
+        version = requested;
+    }
+    else {
+        const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+        version = resolveVersion(requested, versions);
+    }
     if (version) {
+        const source = version === systemVersion ? 'system' :
+            aptVersions.has(version) ? 'apt' : 'ghcup';
         return {
             version,
-            source: aptVersions.has(version) ? 'apt' : 'ghcup',
+            source,
         };
     }
     else {
@@ -348,6 +353,13 @@ async function resolve(requested) {
     }
 }
 exports.resolve = resolve;
+async function installed() {
+    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
+        silent: true,
+    });
+    return result.stdout.trim();
+}
+exports.installed = installed;
 
 
 /***/ }),

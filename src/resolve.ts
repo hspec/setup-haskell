@@ -1,3 +1,5 @@
+import { getExecOutput } from '@actions/exec';
+
 import * as apt from './apt';
 import * as ghcup from './ghcup';
 
@@ -32,30 +34,40 @@ export function resolveVersion(requested: string, versions: Set<string>): string
   }
 }
 
-type ResolvedVersion = {
+export type ResolvedVersion = {
   version: string;
-  source: 'apt' | 'ghcup';
+  source: 'system' | 'apt' | 'ghcup';
 };
 
 export async function resolve(requested: string): Promise<ResolvedVersion> {
+  const systemVersion = await installed();
   const aptVersions = apt.versions();
 
-  if (aptVersions.has(requested)) {
-    return {
-      version: requested,
-      source: 'apt',
-    };
+  let version;
+  if (requested === 'system') {
+    version = systemVersion;
+  } else if (apt.versions().has(requested)) {
+    version = requested;
+  } else {
+    const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+    version = resolveVersion(requested, versions);
   }
 
-  const versions = new Set([...aptVersions, ...await ghcup.list()]);
-  const version = resolveVersion(requested, versions);
-
   if (version) {
+    const source = version === systemVersion ? 'system' :
+      aptVersions.has(version) ? 'apt' : 'ghcup';
     return {
       version,
-      source: aptVersions.has(version) ? 'apt' : 'ghcup',
+      source,
     };
   } else {
     throw new Error(`GHC version ${JSON.stringify(requested)} is not available.`);
   }
+}
+
+export async function installed(): Promise<string> {
+  const result = await getExecOutput('ghc', ['--numeric-version'], {
+    silent: true,
+  });
+  return result.stdout.trim();
 }
