@@ -1,30 +1,49 @@
 # setup-haskell
+[![build-badge][]][build]
+[![selftest.ubuntu-18.04-badge][]][selftest.ubuntu-18.04]
+[![selftest.ubuntu-20.04-badge][]][selftest.ubuntu-20.04]
+[![selftest.ubuntu-22.04-badge][]][selftest.ubuntu-22.04]
+[![selftest.macos-10.15-badge][]][selftest.macos-10.15]
+[![selftest.macos-11-badge][]][selftest.macos-11]
+[![selftest.macos-12-badge][]][selftest.macos-12]
+[![selftest.windows-2019-badge][]][selftest.windows-2019]
+[![selftest.windows-2022-badge][]][selftest.windows-2022]
 
-[![build](https://github.com/hspec/setup-haskell/actions/workflows/build.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/build.yml)
-[![selftest.ubuntu-18.04](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-18.04.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-18.04.yml)
-[![selftest.ubuntu-20.04](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-20.04.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-20.04.yml)
-[![selftest.ubuntu-22.04](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-22.04.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-22.04.yml)
-[![selftest.macos-10.15](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-10.15.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-10.15.yml)
-[![selftest.macos-11](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-11.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-11.yml)
-[![selftest.macos-12](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml)
-[![selftest.windows-2019](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml)
-[![selftest.windows-2022](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml)
+This action sets up a Haskell environment for use in GitHub Actions by:
 
-This GitHub Action sets up a Haskell environment by:
+- installing a request version of [`ghc`][] and adding it to the `PATH`
+- adding `$HOME/.cabal/bin/` to the `PATH`
 
-- installing a request version of [`ghc`][ghc] and adding it to the `PATH`.
-- installing a request version of [`ghc`][] and adding it to the `PATH`.
-- installing a request version of [ghc][] and adding it to the `PATH`.
-
-- adding `$HOME/.cabal/bin/` to the `PATH`.
-
-The GitHub runners come with
-[pre-installed versions of `ghc`, `cabal` and `stack`](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#preinstalled-software).
+The GitHub runners come with [pre-installed versions of `ghc`, `cabal` and
+`stack`][preinstalled-software].
 
 The pre-installed version of `ghc` will be used when possible.  For all other
-versions, this action utilizes
-[`ppa:hvr/ghc`](https://launchpad.net/~hvr/+archive/ubuntu/ghc) and
-[`ghcup`](https://www.haskell.org/ghcup/).
+versions, this action utilizes [`ppa:hvr/ghc`][] and [`ghcup`][].
+
+[preinstalled-software]: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#preinstalled-software
+
+[`ghc`]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
+[`ghcup`]: https://www.haskell.org/ghcup/
+[`ppa:hvr/ghc`]: https://launchpad.net/~hvr/+archive/ubuntu/ghc
+
+[build]: https://github.com/hspec/setup-haskell/actions/workflows/build.yml
+[build-badge]: https://github.com/hspec/setup-haskell/actions/workflows/build.yml/badge.svg
+[selftest.macos-10.15]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-10.15.yml
+[selftest.macos-11]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-11.yml
+[selftest.macos-12]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml
+[selftest.ubuntu-18.04]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-18.04.yml
+[selftest.ubuntu-20.04]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-20.04.yml
+[selftest.ubuntu-22.04]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-22.04.yml
+[selftest.windows-2019]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml
+[selftest.windows-2022]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml
+[selftest.macos-10.15-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-10.15.yml/badge.svg
+[selftest.macos-11-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-11.yml/badge.svg
+[selftest.macos-12-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml/badge.svg
+[selftest.ubuntu-18.04-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-18.04.yml/badge.svg
+[selftest.ubuntu-20.04-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-20.04.yml/badge.svg
+[selftest.ubuntu-22.04-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.ubuntu-22.04.yml/badge.svg
+[selftest.windows-2019-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml/badge.svg
+[selftest.windows-2022-badge]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml/badge.svg
 
 ## Usage
 
@@ -77,11 +96,31 @@ See [action.yml](action.yml)
 | `7.0.1`                |       🟢       |       🟢       |       ❌       |       ❌      |     ❌     |     ❌     |       ❌       |       ❌       |
 <!-- generated by generate/readme.ts END -->
 
-##
+## Goals
 
-![selftest.macos-12][]
+- ⏱️ fast: do the minimum amount of work that is required for a correct solution
+- 🦾 robust: don't sacrifice speed for correctness
+- 🎯 focused: Do one thing, but do it right (Unix-style).  This action only
+  installs `ghc`.  It does not try to install `cabal` or `stack`.  The GitHub
+  runners provide recent versions of `stack` and `cabal`.
 
-[ghc]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
-[`ghc`]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
+- 🔥 recent: `latest` will always give you the latest version of `ghc`.  This
+  action does not require housekeeping to support new versions of GHC.  The
+  version matrix in the `README` needs to be updated periodically, which is
+  mostly automated.
 
-[selftest.macos-12]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml/badge.svg
+## Alternatives
+> ...failing tests are bad, test that pass even though they should fail are
+> worse...
+
+- [`actions/setup-haskell`][] is unmaintained.
+- [`haskell/actions`][] is a maintained fork of [`actions/setup-haskell`][].
+  However, it's lacking in the "robustness" department.  At some point it would
+  go so far as to [silently use the wrong version of
+  `ghc`](https://github.com/haskell/actions/issues/80) to run your tests.  It's
+  also less focused and does not follow [standard conventions for GitHub
+  actions](
+  https://github.com/haskell/actions/issues/18#issuecomment-762914338).
+
+[`haskell/actions`]: https://github.com/haskell/actions
+[`actions/setup-haskell`]: https://github.com/actions/setup-haskell
