@@ -1,4 +1,4 @@
-import { compareVersions, resolveVersion, resolve } from '../src/resolve';
+import { compareVersions, resolveVersion, resolve, installed } from '../src/resolve';
 
 const context = describe;
 
@@ -88,6 +88,24 @@ describe('resolve', () => {
     expect(await resolve('8.10.6')).toEqual({
       version: '8.10.6',
       source: 'ghcup',
+    });
+  });
+
+  it('resolves "system"', async () => {
+    const expected = await installed();
+    expect(await resolve('system')).toEqual({
+      version: expected,
+      source: 'system',
+    });
+  });
+
+  context('when version is already installed', () => {
+    it('sets "source" to "system"', async () => {
+      const expected = await installed();
+      expect(await resolve(expected)).toEqual({
+        version: expected,
+        source: 'system',
+      });
     });
   });
 

@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 16
 
+      # this ensures that tests do not timeout
+      - run: ghc --version
+      - run: ghcup list
+
       - run: npm ci
       - run: npm test
 

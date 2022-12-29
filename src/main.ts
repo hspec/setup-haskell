@@ -1,16 +1,12 @@
 import * as core from '@actions/core';
-import { getExecOutput } from '@actions/exec';
 
 import * as apt from './apt';
 import * as ghcup from './ghcup';
-import { resolve } from './resolve';
+import { installed, resolve, ResolvedVersion } from './resolve';
 
 async function main() {
   try {
-    const home = process.env['HOME'];
-    if (home) {
-      core.addPath(home + '/.cabal/bin/');
-    }
+    await addCabalBinToPath();
     const requested = core.getInput('ghc-version');
     const version = await ensure(requested);
     core.setOutput('ghc-version', version);
@@ -23,44 +19,46 @@ async function main() {
   }
 }
 
-async function ensure(requested: string): Promise<string> {
-  if (requested === 'system') {
-    const version = installed();
-    core.info(`Using GHC version ${version}.`);
-    return version;
-  } else {
-    const version = await install(requested);
-    await verify(version);
-    return version;
+async function addCabalBinToPath() {
+  const home = process.env['HOME'];
+  if (home) {
+    core.addPath(home + '/.cabal/bin/');
   }
 }
 
-async function install(requested: string): Promise<string> {
+async function ensure(requested: string): Promise<string> {
   const resolved = await resolve(requested);
-  switch (resolved.source) {
-    case 'apt':
-      await apt.install(resolved.version);
-      break;
-    case 'ghcup':
-      await ghcup.install(resolved.version);
-      break;
-  }
+  await install(resolved);
+  await verify(resolved);
   return resolved.version;
 }
 
-async function verify(expected: string) {
+async function install(resolved: ResolvedVersion): Promise<undefined> {
+  // IMPORTANT: Using `undefined` instead of `void` as the return type ensures
+  // that the pattern match is exhaustive.
+  switch (resolved.source) {
+    case 'apt':
+      await apt.install(resolved.version);
+      return;
+    case 'ghcup':
+      await ghcup.install(resolved.version);
+      return;
+    case 'system':
+      return;
+  }
+}
+
+async function verify(resolved: ResolvedVersion) {
+  const expected = resolved.version;
   const actual = await installed();
   if (actual != expected) {
     throw new Error(`Expected GHC version to be ${expected} but got ${actual}.`);
   }
-  core.info(`Installed GHC version ${expected}.`);
-}
-
-async function installed(): Promise<string> {
-  const result = await getExecOutput('ghc', ['--numeric-version'], {
-    silent: true,
-  });
-  return result.stdout.trim();
+  if (resolved.source === 'system') {
+    core.info(`Using GHC version ${expected}.`);
+  } else {
+    core.info(`Installed GHC version ${expected}.`);
+  }
 }
 
 if (require.main === module) {
