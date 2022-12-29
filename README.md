@@ -79,4 +79,9 @@ See [action.yml](action.yml)
 
 ##
 
+![selftest.macos-12][]
+
 [ghc]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
+[`ghc`]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
+
+[selftest.macos-12]: https://github.com/hspec/setup-haskell/actions/workflows/selftest.macos-12.yml/badge.svg
