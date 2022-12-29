@@ -1,5 +1,8 @@
 name: selftest ubuntu-18.04
 on:
+  workflow_dispatch: null
+  schedule:
+    - cron: 0 0 4 * *
   push:
     branches:
       - selftest

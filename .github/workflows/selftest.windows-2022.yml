@@ -1,5 +1,8 @@
 name: selftest windows-2022
 on:
+  workflow_dispatch: null
+  schedule:
+    - cron: 0 0 8 * *
   push:
     branches:
       - selftest

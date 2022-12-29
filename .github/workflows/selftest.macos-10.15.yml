@@ -1,5 +1,8 @@
 name: selftest macos-10.15
 on:
+  workflow_dispatch: null
+  schedule:
+    - cron: 0 0 1 * *
   push:
     branches:
       - selftest
