@@ -80,4 +80,3 @@ See [action.yml](action.yml)
 ##
 
 [ghc]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
-[`ghc`]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
