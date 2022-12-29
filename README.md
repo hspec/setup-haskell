@@ -13,6 +13,9 @@
 This GitHub Action sets up a Haskell environment by:
 
 - installing a request version of [`ghc`][ghc] and adding it to the `PATH`.
+- installing a request version of [`ghc`][] and adding it to the `PATH`.
+- installing a request version of [ghc][] and adding it to the `PATH`.
+
 - adding `$HOME/.cabal/bin/` to the `PATH`.
 
 The GitHub runners come with
@@ -77,3 +80,4 @@ See [action.yml](action.yml)
 ##
 
 [ghc]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
+[`ghc`]: https://downloads.haskell.org/ghc/latest/docs/users_guide/
