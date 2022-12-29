@@ -1,5 +1,8 @@
 name: selftest windows-2019
 on:
+  workflow_dispatch: null
+  schedule:
+    - cron: 0 0 7 * *
   push:
     branches:
       - selftest

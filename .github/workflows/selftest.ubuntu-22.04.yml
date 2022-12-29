@@ -1,5 +1,8 @@
 name: selftest ubuntu-22.04
 on:
+  workflow_dispatch: null
+  schedule:
+    - cron: 0 0 6 * *
   push:
     branches:
       - selftest
