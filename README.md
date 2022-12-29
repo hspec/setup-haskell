@@ -10,6 +10,14 @@
 [![selftest.windows-2019](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2019.yml)
 [![selftest.windows-2022](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml/badge.svg)](https://github.com/hspec/setup-haskell/actions/workflows/selftest.windows-2022.yml)
 
+This GitHub Action sets up a Haskell environment by:
+
+- optionally installing a version of [ghc](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/) and [cabal](https://www.haskell.org/cabal/) and adding to the `PATH`.
+- adding `$HOME/.cabal/bin/` to the `PATH`.
+
+The GitHub runners come with [pre-installed versions of GHC and Cabal](https://help.github.com/en/actions/reference/software-installed-on-github-hosted-runners). Those will be used whenever possible.
+For all other versions, this action utilizes [`ppa:hvr/ghc`](https://launchpad.net/~hvr/+archive/ubuntu/ghc) and [`ghcup`](https://gitlab.haskell.org/haskell/ghcup-hs).
+
 ## Usage
 
 See [action.yml](action.yml)
