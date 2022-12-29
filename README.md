@@ -12,11 +12,14 @@
 
 This GitHub Action sets up a Haskell environment by:
 
-- optionally installing a version of [ghc](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/) and [cabal](https://www.haskell.org/cabal/) and adding to the `PATH`.
+- installing a request version of [ghc](https://downloads.haskell.org/ghc/latest/docs/users_guide/) and adding it to the `PATH`.
 - adding `$HOME/.cabal/bin/` to the `PATH`.
 
-The GitHub runners come with [pre-installed versions of GHC and Cabal](https://help.github.com/en/actions/reference/software-installed-on-github-hosted-runners). Those will be used whenever possible.
-For all other versions, this action utilizes [`ppa:hvr/ghc`](https://launchpad.net/~hvr/+archive/ubuntu/ghc) and [`ghcup`](https://gitlab.haskell.org/haskell/ghcup-hs).
+The GitHub runners come with [pre-installed versions of GHC and
+Cabal](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#preinstalled-software).
+Those will be used whenever possible.
+
+For all other versions, this action utilizes [`ppa:hvr/ghc`](https://launchpad.net/~hvr/+archive/ubuntu/ghc) and [`ghcup`](https://www.haskell.org/ghcup/).
 
 ## Usage
 
