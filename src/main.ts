@@ -1,4 +1,6 @@
+import * as fs from 'fs';
 import * as core from '@actions/core';
+import { exec } from '@actions/exec';
 
 import * as apt from './apt';
 import * as ghcup from './ghcup';
@@ -6,6 +8,7 @@ import { installed, resolve, ResolvedVersion } from './resolve';
 
 async function main() {
   try {
+    await workaroundRunnerImageIssue7061();
     await addCabalBinToPath();
     const requested = core.getInput('ghc-version');
     const version = await ensure(requested);
@@ -17,6 +20,16 @@ async function main() {
       core.setFailed(String(error));
     }
   }
+}
+
+async function workaroundRunnerImageIssue7061() {
+  await core.group('Workaround for https://github.com/actions/runner-images/issues/7061', async () => {
+    const user = process.env['USER'];
+    const path = '/usr/local/.ghcup';
+    if (fs.existsSync(path)) {
+      await exec(`sudo chown -R ${user} ${path}`);
+    }
+  });
 }
 
 async function addCabalBinToPath() {
