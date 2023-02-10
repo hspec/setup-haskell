@@ -197,12 +197,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const fs = __importStar(__nccwpck_require__(147));
 const core = __importStar(__nccwpck_require__(186));
+const exec_1 = __nccwpck_require__(514);
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
+        await workaroundRunnerImageIssue7061();
         await addCabalBinToPath();
         const requested = core.getInput('ghc-version');
         const version = await ensure(requested);
@@ -216,6 +219,15 @@ async function main() {
             core.setFailed(String(error));
         }
     }
+}
+async function workaroundRunnerImageIssue7061() {
+    await core.group('Workaround for https://github.com/actions/runner-images/issues/7061', async () => {
+        const user = process.env['USER'];
+        const path = '/usr/local/.ghcup';
+        if (fs.existsSync(path)) {
+            await (0, exec_1.exec)(`sudo chown -R ${user} ${path}`);
+        }
+    });
 }
 async function addCabalBinToPath() {
     const home = process.env['HOME'];
