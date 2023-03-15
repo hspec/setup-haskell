@@ -16,7 +16,6 @@ const not_working_on_windows_2022 = new Set([
 export async function versionMap() {
   const ghcup = await list();
   return {
-    'ubuntu-18.04': new Set([...ppa.ubuntu18, ...ghcup]),
     'ubuntu-20.04': new Set([...ppa.ubuntu20, ...ghcup]),
     'ubuntu-22.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_22_04.has(v))),
     'macos-10.15': ghcup,
