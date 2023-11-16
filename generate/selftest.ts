@@ -18,9 +18,9 @@ export async function versionMap() {
   return {
     'ubuntu-20.04': new Set([...ppa.ubuntu20, ...ghcup]),
     'ubuntu-22.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_22_04.has(v))),
-    'macos-10.15': ghcup,
     'macos-11': ghcup,
     'macos-12': ghcup,
+    'macos-13': ghcup,
     'windows-2019': ghcup,
     'windows-2022': new Set([...ghcup].filter(v => !not_working_on_windows_2022.has(v))),
   };
