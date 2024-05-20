@@ -20,7 +20,6 @@ export async function versionMap() {
     'ubuntu-22.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_22_04.has(v))),
     'macos-11': ghcup,
     'macos-12': ghcup,
-    'macos-13': ghcup,
     'windows-2019': ghcup,
     'windows-2022': new Set([...ghcup].filter(v => !not_working_on_windows_2022.has(v))),
   };
