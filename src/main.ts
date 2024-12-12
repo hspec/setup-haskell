@@ -8,8 +8,8 @@ import { installed, resolve, ResolvedVersion } from './resolve';
 
 async function main() {
   try {
+    await ghcup.ensure();
     await workaroundRunnerImageIssue7061();
-    await addCabalBinToPath();
     const requested = core.getInput('ghc-version');
     const version = await ensure(requested);
     core.setOutput('ghc-version', version);
@@ -30,13 +30,6 @@ async function workaroundRunnerImageIssue7061() {
       await exec(`sudo chown -R ${user} ${path}`);
     }
   });
-}
-
-async function addCabalBinToPath() {
-  const home = process.env['HOME'];
-  if (home) {
-    core.addPath(home + '/.cabal/bin/');
-  }
 }
 
 async function ensure(requested: string): Promise<string> {

@@ -2,7 +2,7 @@ name: selftest ubuntu-20.04
 on:
   workflow_dispatch: null
   schedule:
-    - cron: 0 0 5 * *
+    - cron: 0 0 4 * *
   push:
     branches:
       - selftest
@@ -21,6 +21,7 @@ jobs:
       - run: cabal install alex
       - run: alex --version
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-20.04
@@ -78,4 +79,6 @@ jobs:
           - 9.6.6
           - 9.8.1
           - 9.8.2
+          - 9.8.4
           - 9.10.1
+          - 9.12.1

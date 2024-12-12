@@ -1,4 +1,5 @@
 import { getExecOutput } from '@actions/exec';
+import { which } from '@actions/io';
 
 import * as apt from './apt';
 import * as ghcup from './ghcup';
@@ -39,18 +40,26 @@ export type ResolvedVersion = {
   source: 'system' | 'apt' | 'ghcup';
 };
 
+async function doResolveVersion(requested: string): Promise<string | undefined> {
+  const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+  return resolveVersion(requested, versions);
+}
+
 export async function resolve(requested: string): Promise<ResolvedVersion> {
   const systemVersion = await installed();
   const aptVersions = apt.versions();
 
   let version;
   if (requested === 'system') {
-    version = systemVersion;
+    if (systemVersion) {
+      version = systemVersion;
+    } else {
+      version = await doResolveVersion('latest');
+    }
   } else if (apt.versions().has(requested)) {
     version = requested;
   } else {
-    const versions = new Set([...apt.versions(), ...await ghcup.list()]);
-    version = resolveVersion(requested, versions);
+    version = await doResolveVersion(requested);
   }
 
   if (version) {
@@ -65,9 +74,13 @@ export async function resolve(requested: string): Promise<ResolvedVersion> {
   }
 }
 
-export async function installed(): Promise<string> {
-  const result = await getExecOutput('ghc', ['--numeric-version'], {
-    silent: true,
-  });
-  return result.stdout.trim();
+export async function installed(): Promise<string | undefined> {
+  if (await which('ghc')) {
+    const result = await getExecOutput('ghc', ['--numeric-version'], {
+      silent: true,
+    });
+    return result.stdout.trim();
+  } else {
+    return undefined;
+  }
 }

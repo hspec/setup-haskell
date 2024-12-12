@@ -105,10 +105,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.list = exports.install = void 0;
+exports.list = exports.install = exports.ensure = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
 const resolve_1 = __nccwpck_require__(778);
+const io_1 = __nccwpck_require__(436);
+async function ensure() {
+    if (!await (0, io_1.which)('ghcup')) {
+        await (0, exec_1.exec)('brew install ghcup');
+        const home = process.env['HOME'];
+        if (home) {
+            core.addPath(home + '/.ghcup/bin/');
+        }
+    }
+    if (!await (0, io_1.which)('cabal')) {
+        await (0, exec_1.exec)('ghcup install cabal latest --set');
+        const result = await (0, exec_1.getExecOutput)('cabal', ['path', '-v0', '--installdir'], {
+            silent: true,
+        });
+        core.addPath(result.stdout.trim());
+    }
+}
+exports.ensure = ensure;
 async function install(version) {
     const older804 = (0, resolve_1.compareVersions)(version, '8.4') == -1;
     const ncursesRequired = older804 && process.env['ImageOS'] == 'ubuntu22';
@@ -119,7 +137,6 @@ async function install(version) {
     }
     await core.group('ghcup install', async () => {
         await (0, exec_1.exec)(`ghcup install ghc ${version} --set`);
-        core.addPath('$HOME/.ghcup/bin');
     });
 }
 exports.install = install;
@@ -174,8 +191,8 @@ const ghcup = __importStar(__nccwpck_require__(474));
 const resolve_1 = __nccwpck_require__(778);
 async function main() {
     try {
+        await ghcup.ensure();
         await workaroundRunnerImageIssue7061();
-        await addCabalBinToPath();
         const requested = core.getInput('ghc-version');
         const version = await ensure(requested);
         core.setOutput('ghc-version', version);
@@ -197,12 +214,6 @@ async function workaroundRunnerImageIssue7061() {
             await (0, exec_1.exec)(`sudo chown -R ${user} ${path}`);
         }
     });
-}
-async function addCabalBinToPath() {
-    const home = process.env['HOME'];
-    if (home) {
-        core.addPath(home + '/.cabal/bin/');
-    }
 }
 async function ensure(requested) {
     const resolved = await (0, resolve_1.resolve)(requested);
@@ -275,6 +286,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.installed = exports.resolve = exports.resolveVersion = exports.compareVersions = void 0;
 const exec_1 = __nccwpck_require__(514);
+const io_1 = __nccwpck_require__(436);
 const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 function compareVersions(a, b) {
@@ -307,19 +319,27 @@ function resolveVersion(requested, versions) {
     }
 }
 exports.resolveVersion = resolveVersion;
+async function doResolveVersion(requested) {
+    const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+    return resolveVersion(requested, versions);
+}
 async function resolve(requested) {
     const systemVersion = await installed();
     const aptVersions = apt.versions();
     let version;
     if (requested === 'system') {
-        version = systemVersion;
+        if (systemVersion) {
+            version = systemVersion;
+        }
+        else {
+            version = await doResolveVersion('latest');
+        }
     }
     else if (apt.versions().has(requested)) {
         version = requested;
     }
     else {
-        const versions = new Set([...apt.versions(), ...await ghcup.list()]);
-        version = resolveVersion(requested, versions);
+        version = await doResolveVersion(requested);
     }
     if (version) {
         const source = version === systemVersion ? 'system' :
@@ -335,10 +355,15 @@ async function resolve(requested) {
 }
 exports.resolve = resolve;
 async function installed() {
-    const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
-        silent: true,
-    });
-    return result.stdout.trim();
+    if (await (0, io_1.which)('ghc')) {
+        const result = await (0, exec_1.getExecOutput)('ghc', ['--numeric-version'], {
+            silent: true,
+        });
+        return result.stdout.trim();
+    }
+    else {
+        return undefined;
+    }
 }
 exports.installed = installed;
 
