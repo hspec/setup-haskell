@@ -101,7 +101,7 @@ describe('resolve', () => {
 
   context('when version is already installed', () => {
     it('sets "source" to "system"', async () => {
-      const expected = await installed();
+      const expected = (await installed())!;
       expect(await resolve(expected)).toEqual({
         version: expected,
         source: 'system',

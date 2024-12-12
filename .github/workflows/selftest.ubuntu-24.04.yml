@@ -1,8 +1,8 @@
-name: selftest macos-11
+name: selftest ubuntu-24.04
 on:
   workflow_dispatch: null
   schedule:
-    - cron: 0 0 2 * *
+    - cron: 0 0 6 * *
   push:
     branches:
       - selftest
@@ -21,13 +21,11 @@ jobs:
       - run: cabal install alex
       - run: alex --version
     strategy:
+      fail-fast: false
       matrix:
         os:
-          - macos-11
+          - ubuntu-24.04
         ghc:
-          - 7.10.3
-          - 8.0.2
-          - 8.2.2
           - 8.4.1
           - 8.4.2
           - 8.4.3
@@ -74,4 +72,6 @@ jobs:
           - 9.6.6
           - 9.8.1
           - 9.8.2
+          - 9.8.4
           - 9.10.1
+          - 9.12.1

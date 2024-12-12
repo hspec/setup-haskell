@@ -1,8 +1,8 @@
-name: selftest macos-12
+name: selftest macos-14
 on:
   workflow_dispatch: null
   schedule:
-    - cron: 0 0 3 * *
+    - cron: 0 0 2 * *
   push:
     branches:
       - selftest
@@ -21,44 +21,15 @@ jobs:
       - run: cabal install alex
       - run: alex --version
     strategy:
+      fail-fast: false
       matrix:
         os:
-          - macos-12
+          - macos-14
         ghc:
-          - 7.10.3
-          - 8.0.2
-          - 8.2.2
-          - 8.4.1
-          - 8.4.2
-          - 8.4.3
-          - 8.4.4
-          - 8.6.1
-          - 8.6.2
-          - 8.6.3
-          - 8.6.4
-          - 8.6.5
-          - 8.8.1
-          - 8.8.2
-          - 8.8.3
-          - 8.8.4
-          - 8.10.1
-          - 8.10.2
-          - 8.10.3
-          - 8.10.4
-          - 8.10.5
-          - 8.10.6
-          - 8.10.7
-          - 9.0.1
-          - 9.0.2
-          - 9.2.1
-          - 9.2.2
-          - 9.2.3
-          - 9.2.4
           - 9.2.5
           - 9.2.6
           - 9.2.7
           - 9.2.8
-          - 9.4.1
           - 9.4.2
           - 9.4.3
           - 9.4.4
@@ -74,4 +45,6 @@ jobs:
           - 9.6.6
           - 9.8.1
           - 9.8.2
+          - 9.8.4
           - 9.10.1
+          - 9.12.1
