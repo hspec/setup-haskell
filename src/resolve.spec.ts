@@ -60,23 +60,6 @@ describe('resolveVersion', () => {
 });
 
 describe('resolve', () => {
-
-  process.env['ImageOS'] = 'ubuntu20';
-
-  it('resolves apt versions', async () => {
-    expect(await resolve('7.0')).toEqual({
-      version: '7.0.4',
-      source: 'apt',
-    });
-  });
-
-  it('resolves fully qualified apt versions', async () => {
-    expect(await resolve('7.0.4')).toEqual({
-      version: '7.0.4',
-      source: 'apt',
-    });
-  });
-
   it('resolves ghcup versions', async () => {
     expect(await resolve('8.10')).toEqual({
       version: '8.10.7',

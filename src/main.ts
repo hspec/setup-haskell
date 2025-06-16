@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as core from '@actions/core';
 import { exec } from '@actions/exec';
 
-import * as apt from './apt';
 import * as ghcup from './ghcup';
 import { installed, resolve, ResolvedVersion } from './resolve';
 
@@ -43,9 +42,6 @@ async function install(resolved: ResolvedVersion): Promise<undefined> {
   // IMPORTANT: Using `undefined` instead of `void` as the return type ensures
   // that the pattern match is exhaustive.
   switch (resolved.source) {
-    case 'apt':
-      await apt.install(resolved.version);
-      return;
     case 'ghcup':
       await ghcup.install(resolved.version);
       return;
