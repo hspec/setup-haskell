@@ -12,6 +12,10 @@ const not_working_on_windows_2022 = new Set([
   '8.8.3',      // installed not able to compile executables
 ]);
 
+const not_working_on_windows_2025 = new Set([
+  '8.8.3',      // installed not able to compile executables
+]);
+
 const not_working_on_ubuntu_24_04 = new Set([
   '7.10.3',     // ghcup install fails
   '8.0.2',      // ghcup install fails
@@ -60,7 +64,7 @@ export async function versionMap() {
     'macos-14': new Set([...ghcup].filter(v => !not_working_on_macos_14_and_15.has(v))),
     'macos-15': new Set([...ghcup].filter(v => !not_working_on_macos_14_and_15.has(v))),
     'windows-2022': new Set([...ghcup].filter(v => !not_working_on_windows_2022.has(v))),
-    'windows-2025': ghcup,
+    'windows-2025': new Set([...ghcup].filter(v => !not_working_on_windows_2025.has(v))),
   };
 }
 
