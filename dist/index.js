@@ -1,81 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 911:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ppa = exports.versions = exports.install = void 0;
-const core = __importStar(__nccwpck_require__(186));
-const exec_1 = __nccwpck_require__(514);
-async function install(version) {
-    await core.group('apt-get install', async () => {
-        await (0, exec_1.exec)('sudo add-apt-repository ppa:hvr/ghc -y');
-        await (0, exec_1.exec)(`sudo apt-get install ghc-${version}`);
-        core.addPath('/opt/ghc/bin');
-    });
-}
-exports.install = install;
-function versions() {
-    const image = process.env['ImageOS'];
-    if (image == 'ubuntu20') {
-        return exports.ppa[image];
-    }
-    else {
-        return new Set();
-    }
-}
-exports.versions = versions;
-exports.ppa = {
-    ubuntu20: new Set([
-        // https://launchpad.net/~hvr/+archive/ubuntu/ghc?field.series_filter=focal
-        '7.0.1',
-        '7.0.4',
-        '7.2.2',
-        '7.4.2',
-        '7.10.3',
-        '8.0.2',
-        '8.2.2',
-        '8.4.4',
-        '8.6.5',
-        '8.8.3',
-        '8.8.4',
-        '8.10.1',
-        '8.10.2',
-        '8.10.3',
-        '8.10.4',
-        '9.0.1',
-    ]),
-};
-
-
-/***/ }),
-
 /***/ 474:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -186,7 +111,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const fs = __importStar(__nccwpck_require__(147));
 const core = __importStar(__nccwpck_require__(186));
 const exec_1 = __nccwpck_require__(514);
-const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 const resolve_1 = __nccwpck_require__(778);
 async function main() {
@@ -225,9 +149,6 @@ async function install(resolved) {
     // IMPORTANT: Using `undefined` instead of `void` as the return type ensures
     // that the pattern match is exhaustive.
     switch (resolved.source) {
-        case 'apt':
-            await apt.install(resolved.version);
-            return;
         case 'ghcup':
             await ghcup.install(resolved.version);
             return;
@@ -287,7 +208,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.installed = exports.resolve = exports.resolveVersion = exports.compareVersions = void 0;
 const exec_1 = __nccwpck_require__(514);
 const io_1 = __nccwpck_require__(436);
-const apt = __importStar(__nccwpck_require__(911));
 const ghcup = __importStar(__nccwpck_require__(474));
 function compareVersions(a, b) {
     const xs = a.split('.');
@@ -320,12 +240,11 @@ function resolveVersion(requested, versions) {
 }
 exports.resolveVersion = resolveVersion;
 async function doResolveVersion(requested) {
-    const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+    const versions = await ghcup.list();
     return resolveVersion(requested, versions);
 }
 async function resolve(requested) {
     const systemVersion = await installed();
-    const aptVersions = apt.versions();
     let version;
     if (requested === 'system') {
         if (systemVersion) {
@@ -335,15 +254,11 @@ async function resolve(requested) {
             version = await doResolveVersion('latest');
         }
     }
-    else if (apt.versions().has(requested)) {
-        version = requested;
-    }
     else {
         version = await doResolveVersion(requested);
     }
     if (version) {
-        const source = version === systemVersion ? 'system' :
-            aptVersions.has(version) ? 'apt' : 'ghcup';
+        const source = version === systemVersion ? 'system' : 'ghcup';
         return {
             version,
             source,

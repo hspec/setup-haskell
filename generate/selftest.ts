@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as YAML from 'yaml';
 import * as resolve from '../src/resolve';
 
-import { ppa } from '../src/apt';
 import { list } from '../src/ghcup';
 
 const not_working_on_ubuntu_22_04 = new Set([
@@ -55,14 +54,13 @@ const not_working_on_macos_14_and_15 = new Set([
 export async function versionMap() {
   const ghcup = await list();
   return {
-    'ubuntu-20.04': new Set([...ppa.ubuntu20, ...ghcup]),
     'ubuntu-22.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_22_04.has(v))),
     'ubuntu-24.04': new Set([...ghcup].filter(v => !not_working_on_ubuntu_24_04.has(v))),
     'macos-13': ghcup,
     'macos-14': new Set([...ghcup].filter(v => !not_working_on_macos_14_and_15.has(v))),
     'macos-15': new Set([...ghcup].filter(v => !not_working_on_macos_14_and_15.has(v))),
-    'windows-2019': ghcup,
     'windows-2022': new Set([...ghcup].filter(v => !not_working_on_windows_2022.has(v))),
+    'windows-2025': ghcup,
   };
 }
 

@@ -1,7 +1,6 @@
 import { getExecOutput } from '@actions/exec';
 import { which } from '@actions/io';
 
-import * as apt from './apt';
 import * as ghcup from './ghcup';
 
 export type Ordering = -1 | 0 | 1
@@ -37,17 +36,16 @@ export function resolveVersion(requested: string, versions: Set<string>): string
 
 export type ResolvedVersion = {
   version: string;
-  source: 'system' | 'apt' | 'ghcup';
+  source: 'system' | 'ghcup';
 };
 
 async function doResolveVersion(requested: string): Promise<string | undefined> {
-  const versions = new Set([...apt.versions(), ...await ghcup.list()]);
+  const versions = await ghcup.list();
   return resolveVersion(requested, versions);
 }
 
 export async function resolve(requested: string): Promise<ResolvedVersion> {
   const systemVersion = await installed();
-  const aptVersions = apt.versions();
 
   let version;
   if (requested === 'system') {
@@ -56,15 +54,12 @@ export async function resolve(requested: string): Promise<ResolvedVersion> {
     } else {
       version = await doResolveVersion('latest');
     }
-  } else if (apt.versions().has(requested)) {
-    version = requested;
   } else {
     version = await doResolveVersion(requested);
   }
 
   if (version) {
-    const source = version === systemVersion ? 'system' :
-      aptVersions.has(version) ? 'apt' : 'ghcup';
+    const source = version === systemVersion ? 'system' : 'ghcup';
     return {
       version,
       source,
