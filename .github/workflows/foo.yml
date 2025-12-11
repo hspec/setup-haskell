@@ -5,7 +5,22 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+        ghc:
+          - 8.0.2
+          - 9.10.1
+          - 9.12.1
+        include:
+          - os: macos-15
+            ghc: 9.12.2
+         # - os: windows-latest
+        #    ghc: system
 
     steps:
       - run: rm -rf /usr/local/.ghcup/*
