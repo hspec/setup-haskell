@@ -1,0 +1,54 @@
+name: dist-ubuntu-22.04
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch: null
+  push:
+    branches:
+      - fast
+jobs:
+  build:
+    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: env
+      - run: ghcup rm ghc 9.12.2
+      - run: ghcup rm ghc 9.10.3
+      - run: ghcup list
+      - run: du -hs /usr/local/.ghcup
+      - run: ghcup install ghc 9.10.1 --set
+      - run: ghc --version
+      - run: which ghc
+      - run: which cabal
+      - run: which ghcup
+      - run: du -hs /usr/local/.ghcup
+      - run: du -hs /usr/local/.ghcup/*
+      - run: du -hs /usr/local/.ghcup/ghc/9.10.1/*
+
+      - run: pwd
+      - run: cabal update
+      - run: cabal install --package-env=. --lib hspec
+      - run: du -hs ~/.local/state/cabal
+      - run: echo $HOME
+
+      - uses: actions/checkout@v4
+      - name: publish binaries
+        run: |
+          dst=ghc-${{ matrix.ghc }}-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
+          tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal/store
+          ls -hl "$dst"
+          gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
+          gh release upload nightly "$dst" --clobber
+        # if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+        ghc:
+          - 8.0.2
