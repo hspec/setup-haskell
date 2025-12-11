@@ -1,6 +1,9 @@
-name: build
+name: foo
 
 on:
+  push:
+    branches:
+      - fast-test
   pull_request:
     branches:
       - main
