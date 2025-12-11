@@ -50,8 +50,8 @@ jobs:
           dst=dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
           tar -czf "$dst" -C /usr/local .ghcup
           ls -hl "$dst"
-          # gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
-          # gh release upload nightly "$dst" --clobber
+          gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
+          gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
