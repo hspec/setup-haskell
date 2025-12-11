@@ -1,39 +1,21 @@
 name: build
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
-  merge_group:
-  schedule:
-    - cron: 0 0 * * *
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Workaround runner image issue
-        # https://github.com/actions/runner-images/issues/7061
-        run: sudo chown -R $USER /usr/local/.ghcup
-
-      # this ensures that tests do not timeout
-      - run: ghc --version
+      - run: rm -rf /usr/local/.ghcup
+      - run: |
+        src=https://github.com/hspec/setup-haskell/releases/download/nightly/dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
+        curl -sSL "$src" | tar -xz -C /usr/local
       - run: ghcup list
+      - run: ghc --version
+      - run: cabal update
+      - run: cabal install --package-env=. --lib hspec
 
-      - run: npm ci
-      - run: npm test
-
-      - run: npm run build
-      - run: npx ts-node generate/readme.ts > README.md
-      - name: Check for uncommitted changes
-        run: git diff --quiet || (git diff && false)
