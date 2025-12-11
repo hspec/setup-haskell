@@ -25,7 +25,6 @@ jobs:
       - run: which ghcup
       - run: du -hs /usr/local/.ghcup
       - run: du -hs /usr/local/.ghcup/*
-      - run: du -hs /usr/local/.ghcup/ghc/9.10.1/*
 
       - run: pwd
       - run: cabal update
