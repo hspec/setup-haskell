@@ -1,31 +1,18 @@
 name: selftest ubuntu-24.04
 on:
   workflow_dispatch: null
-  schedule:
-    - cron: 0 0 6 * *
   push:
     branches:
       - fast
 jobs:
   build:
-    name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: setup-haskell
-        uses: ./
-        with:
-          ghc-version: ${{ matrix.ghc }}
-      - run: ghc --version
+      - run: du -hs /usr/local/.ghcup/bin/ghc
+      - run: ghcup install ghc 9.10.1 --set
       - run: cabal update
       - run: ghc --version
       - run: which ghc
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-        ghc:
-          - 9.10.1
-
+      - run: which cabal
+      - run: which ghcup
+      - run: du -hs /usr/local/.ghcup/bin/ghc
