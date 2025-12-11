@@ -22,9 +22,6 @@ jobs:
       - run: which ghc
       - run: which cabal
       - run: which ghcup
-      - run: du -hs /usr/local/.ghcup
-      - run: du -hs /usr/local/.ghcup/*
-      - run: du -hs /usr/local/.ghcup/ghc/9.10.1/*
 
       - run: pwd
       - run: cabal update
@@ -36,8 +33,7 @@ jobs:
       - name: publish binaries
         run: |
           dst=ghc-${{ matrix.ghc }}-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
-          tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal/store
-          ls -hl "$dst"
+          tar -czpf "$dst" ~/.ghcup ~/.local/state/cabal/store
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
           gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
