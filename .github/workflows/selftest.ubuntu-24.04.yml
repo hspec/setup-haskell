@@ -1,4 +1,8 @@
 name: selftest ubuntu-24.04
+
+permissions:
+  contents: write
+
 on:
   workflow_dispatch: null
   push:
