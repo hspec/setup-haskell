@@ -29,7 +29,7 @@ jobs:
       - run: find /usr/local/.ghcup/
 
       - run: ghcup install ghc 9.10.1 --set
-      - run: cabal update
+      # - run: cabal update
       - run: ghc --version
       - run: which ghc
       - run: which cabal
@@ -39,11 +39,12 @@ jobs:
       - run: du -hs /usr/local/.ghcup/ghc/9.10.1/*
 
       - run: pwd
-      - run: cabal install --package-env=. --lib hspec
-      - run: du -hs ~/.local/state/cabal
+      # - run: cabal install --package-env=. --lib hspec
+      # - run: du -hs ~/.local/state/cabal
 
       - run: echo $HOME
 
+      - uses: actions/checkout@v4
       - name: publish binaries
         run: |
           dst=dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
