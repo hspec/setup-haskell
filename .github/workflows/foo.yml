@@ -17,7 +17,7 @@ jobs:
           - 9.10.1
           - 9.12.1
         include:
-          - os: macos-15
+          - os: macos-latest
             ghc: 9.12.2
          # - os: windows-latest
         #    ghc: system
@@ -27,6 +27,7 @@ jobs:
       - run: |
           dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ matrix.ghc }}.tar.gz
           src=https://github.com/hspec/setup-haskell/releases/download/nightly/$dst
+          echo "$src"
           curl -sSL "$src" | sudo tar -xzp -C /
       - run: ghcup list
       - run: ghc --version
