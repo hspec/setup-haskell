@@ -15,8 +15,12 @@ jobs:
           - ubuntu-22.04
         ghc:
           - 8.0.2
+          - 8.2.2
+          - 8.4.1
+          - 8.4.2
           - 9.10.1
           - 9.12.1
+
         include:
           - os: macos-latest
             ghc: 9.12.2
