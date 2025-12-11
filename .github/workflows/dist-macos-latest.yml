@@ -15,7 +15,7 @@ jobs:
       - run: env
       - run: brew install ghcup
       - run: ghcup install ghc ${{ matrix.ghc }} --set
-      - run: ghcup install cabal
+      - run: ghcup install cabal latest
       - run: echo "$HOME/.ghcup/bin" >> "$GITHUB_PATH"
       - run: ghc --version
       - run: df -h
