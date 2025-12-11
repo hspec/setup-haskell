@@ -17,6 +17,7 @@ jobs:
       - run: ghcup rm ghc 9.10.3
       - run: ghcup list
       - run: du -hs /usr/local/.ghcup
+      - run: sudo apt-get install libncurses5
       - run: ghcup install ghc ${{ matrix.ghc }} --set
       - run: ghc --version
       - run: which ghc
