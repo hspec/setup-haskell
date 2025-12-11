@@ -10,7 +10,7 @@ jobs:
     steps:
       - run: rm -rf /usr/local/.ghcup/*
       - run: |
-          src=https://github.com/hspec/setup-haskell/releases/download/nightly/dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
+          src=https://github.com/hspec/setup-haskell/releases/download/nightly/dist-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
           curl -sSL "$src" | sudo tar -xzp -C /
       - run: ghcup list
       - run: ghc --version
