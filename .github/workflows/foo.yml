@@ -38,14 +38,8 @@ jobs:
           dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ matrix.ghc }}.tar.gz
           src=https://github.com/hspec/setup-haskell/releases/download/nightly/$dst
           echo "$src"
+          gh release download nightly --repo hspec/setup-haskell -p "$dst" -O - | sudo tar -xzp -C /
           # curl -sSL "$src" | sudo tar -xzp -C /
-          status=$(curl -sSL -w "%{http_code}" -o /tmp/archive.tar.gz "$src")
-          echo "HTTP status: $status"
-          if [ "$status" -ne 200 ]; then
-            echo "Download failed"
-            exit 1
-          fi
-          sudo tar -xzp -C / -f /tmp/archive.tar.gz
       - name: Add ghcup bin to PATH (macOS only)
         if: runner.os == 'macOS'
         run: echo "$HOME/.ghcup/bin" >> "$GITHUB_PATH"
