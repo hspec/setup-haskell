@@ -8,19 +8,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: du -hs /usr/local/.ghcup/bin/ghc
+      - run: du -hs /usr/local/.ghcup
       - run: ghcup install ghc 9.10.1 --set
       - run: cabal update
       - run: ghc --version
       - run: which ghc
       - run: which cabal
       - run: which ghcup
-      - run: du -hs /usr/local/.ghcup/bin/ghc
+      - run: du -hs /usr/local/.ghcup
+      - run: pwd
+      - run: cabal install --package-env=. --lib hspec
+      - run: du -hs ~/.local/state/cabal
+      - run: echo $HOME
 
       - name: publish binaries
         run: |
           dst=dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
-          tar -czf "$dst" -C /usr/local/ .ghcup
+          tar -czf "$dst" -C /usr/local .ghcup
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
           gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
