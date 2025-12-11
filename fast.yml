@@ -1,0 +1,21 @@
+name: Setup Haskell
+author: Simon Hengel
+
+inputs:
+  ghc-version:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: echo "$HOME/.ghcup/bin" >> "$GITHUB_PATH"
+      if: runner.os == 'macOS'
+    - run: echo "ImageOS=$ImageOS" >> $GITHUB_ENV
+    - run: sudo apt-get update && sudo apt-get install -y libncurses5
+      if: env.ImageOS == 'ubuntu22' && (inputs.ghc == '8.0.2' || inputs.ghc == '8.2.2')
+    - run: rm -rf /usr/local/.ghcup/*
+    - run: |
+        dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ inputs.ghc }}.tar.gz
+        gh release download nightly --repo hspec/setup-haskell -p "$dst" -O - | sudo tar -xzp -C /
+      env:
+        GH_TOKEN: ${{ github.token }}
