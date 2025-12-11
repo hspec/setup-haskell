@@ -13,7 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - run: env
-      - run: ghcup list
+      - run: echo $PATH
+      - run: ghc --version
       - run: ghcup rm ghc 9.12.2
       - run: ghcup rm ghc 9.10.3
       - run: ghcup list
