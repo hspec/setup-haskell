@@ -20,6 +20,8 @@ jobs:
 
       - run: ghcup list
       - run: ghcup rm ghc 9.12.2
+      - run: ghcup rm ghc 9.10.3
+
       - run: ghcup list
       - run: du -hs /usr/local/.ghcup
       - run: du -hs /usr/local/.ghcup/*
