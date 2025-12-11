@@ -12,24 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: du -hs /usr/local/.ghcup
-      - run: du -hs /usr/local/.ghcup/*
-      - run: tree /usr/local/.ghcup/
-      - run: find /usr/local/.ghcup/
-      - run: du -hs /usr/local/.ghcup/ghc/9.12.2/*
-
       - run: ghcup list
       - run: ghcup rm ghc 9.12.2
       - run: ghcup rm ghc 9.10.3
-
       - run: ghcup list
       - run: du -hs /usr/local/.ghcup
-      - run: du -hs /usr/local/.ghcup/*
-      - run: tree /usr/local/.ghcup/
-      - run: find /usr/local/.ghcup/
-
       - run: ghcup install ghc 9.10.1 --set
-      # - run: cabal update
       - run: ghc --version
       - run: which ghc
       - run: which cabal
@@ -39,8 +27,9 @@ jobs:
       - run: du -hs /usr/local/.ghcup/ghc/9.10.1/*
 
       - run: pwd
-      # - run: cabal install --package-env=. --lib hspec
-      # - run: du -hs ~/.local/state/cabal
+      - run: cabal update
+      - run: cabal install --package-env=. --lib hspec
+      - run: du -hs ~/.local/state/cabal
 
       - run: echo $HOME
 
