@@ -13,13 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - run: env
-      - run: echo $PATH
-      - run: ghc --version
-      - run: ghcup rm ghc 9.12.2
-      - run: ghcup rm ghc 9.10.3
-      - run: ghcup list
-      - run: du -hs /usr/local/.ghcup
-      - run: ghcup install ghc 9.10.1 --set
+      - run: brew install ghcup
+      - run: ghcup install ghc ${{ matrix.ghc }} --set
       - run: ghc --version
       - run: which ghc
       - run: which cabal
