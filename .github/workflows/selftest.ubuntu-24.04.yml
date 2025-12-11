@@ -37,7 +37,7 @@ jobs:
       - name: publish binaries
         run: |
           dst=dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
-          tar -czf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal
+          tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal
           ls -hl "$dst"
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
           gh release upload nightly "$dst" --clobber
