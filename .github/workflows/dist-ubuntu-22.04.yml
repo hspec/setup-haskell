@@ -12,32 +12,20 @@ jobs:
     name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     steps:
-      - run: env
       - run: ghcup rm ghc 9.12.2
       - run: ghcup rm ghc 9.10.3
-      - run: ghcup list
       - run: du -hs /usr/local/.ghcup
+      - run: ghcup list
       - run: sudo apt-get install libncurses5
       - run: ghcup install ghc ${{ matrix.ghc }} --set
       - run: ghc --version
-      - run: which ghc
-      - run: which cabal
-      - run: which ghcup
-      - run: du -hs /usr/local/.ghcup
-      - run: du -hs /usr/local/.ghcup/*
-
-      - run: pwd
       - run: cabal update
       - run: cabal install --package-env=. --lib hspec
-      - run: du -hs ~/.local/state/cabal
-      - run: echo $HOME
-
       - uses: actions/checkout@v4
-      - name: publish binaries
+      - name: publish
         run: |
           dst=ghc-${{ matrix.ghc }}-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
           tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal/store
-          ls -hl "$dst"
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
           gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
