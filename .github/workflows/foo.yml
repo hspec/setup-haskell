@@ -28,6 +28,8 @@ jobs:
         #    ghc: system
 
     steps:
+      - name: Export ImageOS
+        run: echo "ImageOS=$ImageOS" >> $GITHUB_ENV
       - name: Install libncurses5 (only for GHC 8.0.2/8.2.2 on ubuntu22)
         if: env.ImageOS == 'ubuntu22' && (matrix.ghc == '8.0.2' || matrix.ghc == '8.2.2')
         run: sudo apt-get update && sudo apt-get install -y libncurses5
