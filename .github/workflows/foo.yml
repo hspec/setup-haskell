@@ -40,6 +40,8 @@ jobs:
           echo "$src"
           gh release download nightly --repo hspec/setup-haskell -p "$dst" -O - | sudo tar -xzp -C /
           # curl -sSL "$src" | sudo tar -xzp -C /
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Add ghcup bin to PATH (macOS only)
         if: runner.os == 'macOS'
         run: echo "$HOME/.ghcup/bin" >> "$GITHUB_PATH"
