@@ -30,7 +30,6 @@ jobs:
           src=https://github.com/hspec/setup-haskell/releases/download/nightly/$dst
           echo "$src"
           curl -sSL "$src" | sudo tar -xzp -C /
-      - run: ghcup list
       - run: ghc --version
       - run: cabal update
       - run: cabal install --package-env=. --lib hspec
