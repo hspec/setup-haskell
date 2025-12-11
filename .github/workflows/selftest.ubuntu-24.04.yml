@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: du -hs /usr/local/.ghcup
+      - run: du -hs /usr/local/.ghcup/*
+      - run: tree /usr/local/.ghcup/
+      - run: find /usr/local/.ghcup/
+
       - run: ghcup install ghc 9.10.1 --set
       - run: cabal update
       - run: ghc --version
@@ -29,8 +33,9 @@ jobs:
         run: |
           dst=dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
           tar -czf "$dst" -C /usr/local .ghcup
-          gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
-          gh release upload nightly "$dst" --clobber
+          ls -hl "$dst"
+          # gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
+          # gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
