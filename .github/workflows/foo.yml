@@ -11,7 +11,7 @@ jobs:
       - run: rm -rf /usr/local/.ghcup/*
       - run: |
           src=https://github.com/hspec/setup-haskell/releases/download/nightly/dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
-          curl -sSL "$src" | sudo tar -xz
+          curl -sSL "$src" | sudo tar -xzpf -C /
       - run: ghcup list
       - run: ghc --version
       - run: cabal update
