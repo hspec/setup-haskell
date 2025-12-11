@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: publish binaries
         run: |
-          dst=dist-$RUNNER_OS-$ImageOs-$RUNNER_ARCH.tar.gz
+          dst=dist-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
           tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal /home/runner/.cache/cabal
           ls -hl "$dst"
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
