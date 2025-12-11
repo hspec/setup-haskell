@@ -13,7 +13,7 @@ jobs:
     name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     steps:
-      - run: ghcup list
+      - run: env
       - run: ghcup rm ghc 9.12.2
       - run: ghcup rm ghc 9.10.3
       - run: ghcup list
