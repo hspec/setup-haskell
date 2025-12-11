@@ -17,7 +17,7 @@ jobs:
       - run: ghcup rm ghc 9.10.3
       - run: ghcup list
       - run: du -hs /usr/local/.ghcup
-      - run: ghcup install ghc 9.10.1 --set
+      - run: ghcup install ghc ${{ matrix.ghc }} --set
       - run: ghc --version
       - run: which ghc
       - run: which cabal
