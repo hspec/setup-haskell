@@ -10,9 +10,8 @@ jobs:
     steps:
       - run: rm -rf /usr/local/.ghcup/*
       - run: |
-          src=https://github.com/hspec/setup-haskell/releases/download/nightly/ghc-9.10.1-$RUNNER_OS-$ImageOS-$RUNNER_ARCH.tar.gz
-          echo "$src"
-          echo "https://github.com/hspec/setup-haskell/releases/download/nightly/ghc-9.10.1-Linux-ubuntu22-X64.tar.gz"
+          dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ matrix.ghc }}.tar.gz
+          src=https://github.com/hspec/setup-haskell/releases/download/nightly/$dst
           curl -sSL "$src" | sudo tar -xzp -C /
       - run: ghcup list
       - run: ghc --version
