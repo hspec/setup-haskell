@@ -1,9 +1,6 @@
 name: foo
 
 on:
-  push:
-    branches:
-      - fast-test
   pull_request:
 
 jobs:
@@ -11,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: rm -rf /usr/local/.ghcup
+      - run: rm -rf /usr/local/.ghcup/*
       - run: |
           src=https://github.com/hspec/setup-haskell/releases/download/nightly/dist-$RUNNER_OS-$RUNNER_ARCH.tar.gz
           curl -sSL "$src" | tar -xz -C /usr/local
