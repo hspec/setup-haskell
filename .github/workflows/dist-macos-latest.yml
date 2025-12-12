@@ -16,25 +16,16 @@ jobs:
     name: ${{ matrix.os }} / GHC ${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     steps:
-      - run: env
       - run: brew install ghcup
       - run: ghcup install ghc ${{ matrix.ghc }} --set
       - run: ghcup install cabal latest
       - run: echo "$HOME/.ghcup/bin" >> "$GITHUB_PATH"
       - run: ghc --version
-      - run: df -h
-      - run: which ghc
-      - run: which cabal
-      - run: which ghcup
-
-      - run: pwd
       - run: cabal update
       - run: cabal install --package-env=. --lib hspec
       - run: du -hs ~/.local/state/cabal
-      - run: echo $HOME
-
       - uses: actions/checkout@v4
-      - name: publish binaries
+      - name: publish
         run: |
           dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ matrix.ghc }}.tar.gz
           tar -czpf "$dst" ~/.ghcup ~/.local/state/cabal/store
