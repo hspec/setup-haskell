@@ -23,7 +23,6 @@ jobs:
       - run: ghc --version
       - run: cabal update
       - run: cabal install --package-env=. --lib hspec
-      - run: du -hs ~/.local/state/cabal
       - uses: actions/checkout@v4
       - name: publish
         run: |
