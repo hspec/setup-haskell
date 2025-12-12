@@ -29,7 +29,7 @@ jobs:
       - name: publish
         run: |
           dst=$RUNNER_OS-$ImageOS-$RUNNER_ARCH-ghc-${{ matrix.ghc }}.tar.gz
-          tar -czpf "$dst" /usr/local/.ghcup /home/runner/.local/state/cabal/store
+          tar -czpf "$dst" /usr/local/.ghcup ~/.local/state/cabal/store
           gh release create nightly --prerelease || (git tag nightly -f && git push --tags -f)
           gh release upload nightly "$dst" --clobber
         # if: github.ref == 'refs/heads/main'
